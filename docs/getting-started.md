@@ -1,123 +1,95 @@
 # Getting Started  
 
-In this section, we'll walk you through setting up the **Dot Matrix Shader**.  
+Using the Long Exposure Component is quite simple. You can either attach the component directly to any blueprint of your choice or simply drag and drop the ``BP_LongExposureActor`` into the scene. By default, the component uses SPACE as input to start capture.
 
-## 1. Project Settings  
+## Using the Component
 
-Before using this asset, you need to enable **Custom Depth** in your project settings. To do this, go to:  
-`Edit -> Project Settings`, then search for **"Custom Depth"**. Locate the option `Custom Depth-Stencil Pass` and set it to `Enabled with Stencil`.
+1. Go to your actor of choice. In the **Components** section, add the ``BP Long Exposure Component``.
 
-![alt text](<images/Screenshot 2025-04-01 175633.png>)
+    ![alt text](<images/Screenshot 2025-04-30 131202.png>)
 
-## 2. Post-Process Volume  
+2. Once the actor is placed in the scene, press **SPACE** to start capture. (Input logic resides within ``BP_LongExposureCamera``).
 
-After enabling **Custom Depth**, the next step is to add a `Post Process Volume` to your scene. Alternatively, you can use an actor with a `Post-Process Component`.  
+    ![alt text](<images/Screenshot 2025-04-30 131646.png>)
 
-Make sure to check the `Infinite Extent` option to apply the effect globally.
+3. The capture will last the duration of ``ExposureTime``. You can change this variable via the details panel of the component. 1 second = 10 units.
 
-![alt text](<images/Screenshot 2025-04-01 180055.png>)
+    ![alt text](<images/Screenshot 2025-04-30 131822.png>)
 
-![alt text](<images/Screenshot 2025-04-01 180419.png>)
+4. The logic for this component is located in ``Plugins/LongExposureCamera Content/Blueprints/BP_LongExposureCamera``. If you need to make changes, feel free to do so here.
 
-## 3. Adding Materials  
+    ![alt text](<images/Screenshot 2025-04-30 132817.png>)
 
-Now, select your ``Post Process Component`` and search for **"Materials"** in the ``Details`` panel. You'll see an empty list—click the **plus icon** and choose your preferred **Dot Matrix** material.
+## Using BP_LongExposureActor
 
-![text](<images/Screenshot 2025-04-01 180618.png>)
-![alt text](<images/Screenshot 2025-04-01 180710.png>)
+Ideal for prototyping where you need to see the effects quickly.
 
-!!! note
-    Do not use **surface** variants for the post process component.
+1. Go to `Plugins/LongExposureCamera Content/Blueprints/` and drag `BP_LongExposureCamera` into the level. 
+2. Once again press **SPACE** to start capture.
 
-## 4. Assigning Custom Depth
+## Discrete Trails vs Smooth Trails
 
-If everything is set up correctly, you might notice a solid color or no visible changes in your viewport.  
+Two artistic effects can be achieved by controlling the motion blur of the component. If motion blur is turned off completely you can achive a discrete long exposure effect. 
 
-![alt text](<images/Screenshot 2025-04-01 181121.png>)
+![alt text](<Screenshot 2025-04-30 143748.png>)
 
-This is expected—since no specific mesh has been targeted yet, only the background color is rendered.  
-
-![alt text](<images/Screenshot 2025-04-01 181552.png>)
-
-To see the effect in action, add a **sphere** (or any mesh) to the scene and enable **Custom Depth**. Select the mesh, in the **Details** panel search for **"Custom Depth"** and enable `Render CustomDepth Pass`. Also set the `CustomDepth Stencil Value` to **77**.  Now, the **Dot Matrix** effect should appear on the selected mesh! 🎉
-
-![alt text](<images/Screenshot 2025-04-01 181606.png>)
+![alt text](<images/Screenshot 2025-04-30 144105.png>)
 
 
-## 5. Using Surface Variants
+If the motion blur is turned on, you can achieve smooth exposure depending on the motion blur settings.
 
-Some variants of the shader can be applied directly to any mesh. Simply **drag and drop** the materials denoted with "Surface" onto the desired surface, and it will work right away!
+![alt text](<images/Screenshot 2025-04-30 144149.png>)
 
-![alt text](<images/Screenshot 2025-04-01 182811.png>)
+## Blend Methods
 
----
+Currently the plugin offers four blend methods to create various exposure effects. The blend mode can be set in the details panel of the component.
 
-## Adding Your Own Patterns
+![alt text](<Screenshot 2025-04-30 145440.png>)
 
-There are two variants of this shader: **Regular** and **Flipbook**. Assigning custom motifs vary for each, so let's see how its done.
+1. Max
 
-### Regular Variant
+    Picks the brightest sample over the accumulated frames. Best suited for light trails and other effects requiring strong trail presence. It recreates how regular cameras work in open shutter with lowered exposures.
 
-Regular variant of the Dot Matrix shader uses individual textures to act as motifs. This means adding more motifs will require duplicating a few simple nodes in the material graph. This process may seem tedious but it comes with the benifit of a more **random** grid.
+    ![alt text](<images/Screenshot 2025-04-30 150338.png>)
 
-1. Open the parent material of choice, here I'm using the **M_DotMatrixR**.
+2. True Mean
 
-    ![alt text](<images/Screenshot 2025-04-01 183802.png>)
+    True Mean is a recreation of Photoshop's mean blending. It takes the average of all accumulated frames resulting in smooth "milky" frames. Best suited for smoothing out clouds, water bodies and other large areas of movement. This is however not ideal for capturing rapid movement, as they will be averaged out quite quickly.
 
-2. In the texture samples section of the material nodes, select any of the ``Texture Sample`` node and change its texture in the details panel.
+    *1st Frame*
 
-    ![alt text](<images/Screenshot 2025-04-01 184008.png>)
-
-3. To **add** more patterns, simply duplicate the ``Texture Sample`` node and assign any excess textures.
-
-    ![alt text](<images/Screenshot 2025-04-01 184457.png>)
-
-4. Next make sure the new ``Texture Sample`` node follows the same lerp format. 
-
-    ![alt text](<images/Screenshot 2025-04-01 184912.png>)
-
-5. For the ``Alpha`` we'll duplicate a ``Step`` node in the **Step Node** section. Make sure the **Y** value corresponds to the number of the texture. So the fourth texture will have a value of **4**.
-
-    !!! CORRECTION
-        The floor input should go to **X** and the step number to **Y**.
-
-    ![alt text](<images/Screenshot 2025-04-01 184949.png>)
-
-6. Connect this returning value to the alpha of the ``Lerp``. Finally connect the output of the ``Lerp`` node to the ``ManualPatterns`` reroute.
+    ![alt text](<images/Screenshot 2025-04-30 150802.png>)
     
-    ![alt text](<images/Screenshot 2025-04-01 185025.png>)
+    *500th Frame*
 
-To see additional patterns in effect, make sure to increase or decrease the ``NumberOfTextures`` parameter in the material/material instances.
-
-![alt text](<images/Screenshot 2025-04-01 190316.png>)
+    ![alt text](<images/Screenshot 2025-04-30 150748.png>)
 
 
-### Flipbook Variant
+3. Lerp
 
-Flipbook variant of the Dot Matrix shader uses pre-defined altases or flipbooks for its grid patterns. This is far easier to modify but comes at the cost of less appealing repititions.
+    Basic linear interpolation of accumulated frames. Results vary depending on the Lerp Alpha.
 
-1. Open any flipbook material and simply assign your own texture to the ``FlipbookPattern`` parameter. 
+    ![alt text](<images/Screenshot 2025-04-30 150921.png>)
 
-    ![alt text](<images/Screenshot 2025-04-02 101347_1.PNG>)
+4. Median
 
-2. Set the appropriate number of rows and columns as seen in your custom flipbook.
+    Takes Max and Min into account with a bias towards Max.
 
-    ![alt text](<images/Screenshot 2025-04-02 101509.png>)
+    ![alt text](<images/Screenshot 2025-04-30 151110.png>)
 
-## Using Scene Color as Background 
 
-![alt text](<images/Screenshot 2025-03-24 153145.png>)
+## Rendering Using Movie Render Queue
 
-If you're looking to create the above effect, there are a couple things to take into consideration. 
+To render your capture, you'll need UE's built-in **Movie Render Queue** plugin. 
 
-1. This effect can be achieved using the **"BG"** variants of the dot matrix shader.
+![alt text](<images/Screenshot 2025-04-30 152540.png>)
 
-    ![alt text](<images/Screenshot 2025-04-02 102306.png>)
+In the **Movie Render Queue** settings, add a **UI Renderer** and a **Command Line Encoder**. Once this is done, hit render and enjoy!
 
-2. However once you apply it to the post-process volume, you'll notice the surface material of the mesh leak through the motifs.
+![alt text](<images/Screenshot 2025-04-30 152703.png>)
 
-    ![alt text](<images/Screenshot 2025-04-02 102447.png>)
+## Closing Note
 
-3. To fix, this simply select the mesh in question and in the ``Material`` parameter, assign the **M_TransparentBase** that comes with the pack.
+The bulk of the effects result from one material called ``M_LongExposureBlend`` located in ``Plugins/LongExposureCamera Content/Materials/``. This material controls the nature of blending and because of that, a lot of customizations can be done here to suit your needs. 
 
-    ![alt text](<images/Screenshot 2025-04-02 102708.png>)
+![alt text](<images/Screenshot 2025-04-30 151724.png>)

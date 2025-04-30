@@ -1,18 +1,23 @@
-# Welcome to Dot Matrix Docs!
+# Welcome to Long Exposure Docs!
 
 ## About
 
-Two Bit's Dot Matrix Shader is a material pack designed to recreate the beautiful, minimal art style of dot matrix visuals. Its core characteristic is the precise placement of dots on a grid. However, this shader goes beyond the traditional style, offering features like custom motifs, randomized colors, animations, and more.
+Long Exposure Component is a simple plugin that lets you quickly create long exposure effects in Unreal Engine. It works in both runtime and offline rendering (Movie Render Queue).
 
-While many similar shaders exist for Unreal Engine 5, what sets ours apart is its ability to target meshes using custom depth, unlocking new creative possibilities.
-
-![alt text](<images/sc_7_3_2 - frame at 0m1s.jpg>)
-
+![alt text](images/SS_1.jpg)
 
 ## Inspiration
 
-This shader was inspired by a striking GIF I found on Pinterest—minimal yet incredibly expressive!
+This plugin was inspired by this cool artwork I found on Pinterest. I wasn't able to create the artstyle 1:1 due to inherint engine limitations, which I'll cover in its own section. But I was able to recreate basic long exposure photography, that too in runtime.
 
-![alt text](images/download.gif)
+![alt text](<images/LE inspiration.jpg>)
 
+## Limitations
 
+Long exposure effects in real-time engines are fundamentally tied to the game's framerate. Unlike traditional photography, where a camera’s shutter can remain open to continuously accumulate light over time, a game engine is restricted by how many frames it can render per second. This creates a discrete sampling problem—each frame is a snapshot rather than a continuous exposure.
+
+The more frames you can sample, the smoother and more convincing the long exposure effect becomes. In this context, high framerates improve visual fidelity. While ideas like integrating DLSS to simulate intermediate frames are interesting, they’re impractical for such a specific case.
+
+That said, a stable 60 FPS is typically sufficient to convincingly simulate long exposure within most real-time applications. Just keep these constraints in mind when evaluating the effect’s capabilities.
+
+![alt text](images/02-31_a_example.jpg)

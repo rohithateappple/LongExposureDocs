@@ -1,10 +1,10 @@
-site_name: Dot Matrix Documentation
-site_url: https://mydomain.org/DotMatrixDocs
+site_name: Long Exposure Docs
+site_url: https://mydomain.org/LEDocs
 
 theme:
   name: material
-  logo: images/DotMatrixLogo.png
-  favicon: images/DotMatrixFavicon.ico
+  logo: images/Logo_w.png
+  favicon: images/Logo.ico
   palette:
     scheme: slate  
     primary: black

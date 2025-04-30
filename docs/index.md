@@ -6,7 +6,7 @@ Long Exposure Component is a simple plugin that lets you quickly create long exp
 
 ![alt text](images/SS_1.jpg)
 
-## Inspiration
+## Inspiration 
 
 This plugin was inspired by this cool artwork I found on Pinterest. I wasn't able to create the artstyle 1:1 due to inherint engine limitations, which I'll cover in its own section. But I was able to recreate basic long exposure photography, that too in runtime.
 
